@@ -1,0 +1,1 @@
+//add a button here to start nav, use Linking,openURL(google.navigation:q=37.484847,-122.148386)

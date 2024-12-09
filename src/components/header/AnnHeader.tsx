@@ -1,0 +1,22 @@
+import Colors from "@/constants/Colors";
+import {FontAwesome} from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
+
+export default function ProfileHeader() {
+    return (
+        <Pressable
+            onPressOut={() => {router.push('/ann')}}
+        >
+            {({pressed}) => (
+                <FontAwesome
+                    name="bullhorn"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{marginRight: 15, opacity: pressed ? 0.5 : 1}}
+                />
+            )}
+            
+        </Pressable>
+    )
+}

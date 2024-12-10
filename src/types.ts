@@ -1,9 +1,5 @@
 import { type Dayjs } from "dayjs";
 
-export type TowReq = {
-
-};
-
 export type Priority = 1 | 2 | 3 | 4 | 5;
 
 export type AnnMsg = {
@@ -14,8 +10,50 @@ export type AnnMsg = {
     priority: Priority;
 }
 
-export type locationType = {
-    id: number;
+export type locCoord = {
+    lat: number;
+    lng: number;
+}
+
+export type locationType = { //locs of service providers
+    coord: locCoord;
     name: string;
-    distanceFromUser: number;
+}
+
+export type imgType = string|undefined;
+
+export type imagesType = {
+  left: imgType,
+  right: imgType,
+  front: imgType,
+  rear: imgType,
+};
+
+export const imgTypeConstants = ['left', 'right', 'front', 'rear'];
+
+export type User = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    policyNum: string;
+    car: Car;
+}
+
+export type Car = {
+    carMake: string;
+    carModel: string;
+    carPlate: string;
+    carYear: string;
+    carColor: string;
+}
+
+export type TowReq = {
+    id: string;
+    datetime: Dayjs;
+    img: imagesType;
+    userLoc: locationType;
+    destLoc: locationType;
+    userCar: Car;
+    status: 'pending' | 'accepted' | 'rejected';
 }

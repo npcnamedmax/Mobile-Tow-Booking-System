@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function Index() {
     const opensForm = () => {
-        router.push("./book");
+        router.push("./(driver)");
     }
     
     return (

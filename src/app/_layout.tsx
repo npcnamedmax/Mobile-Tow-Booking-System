@@ -17,7 +17,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -56,7 +56,9 @@ function RootLayoutNav() { //lists all stack at root
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(user)" options={{ headerShown: false }} />
+          <Stack.Screen name="(driver)" options={{ headerShown: false }} />
           <Stack.Screen name="ann"  options={{ presentation: 'modal', title: 'Announcements' }} />
+          <Stack.Screen name="index"  options={{ presentation: 'modal', title: 'idx' }} />
         </Stack>
       </AnnProvider>
     </ThemeProvider>

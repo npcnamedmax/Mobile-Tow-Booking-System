@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet } from 'react-native';
 type Props = {
-    label: string;
-    value: string;
+    label: string|number;
+    value: string|number;
 };
 
 export default function RequestField( {label, value} : Props) {

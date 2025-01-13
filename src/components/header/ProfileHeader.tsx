@@ -5,8 +5,6 @@ import { Pressable } from "react-native";
 import { useSegments } from "expo-router";
 
 export default function ProfileHeader() {
-    const segments = useSegments();
-    console.log(segments);
     return (
         <Pressable
             onPressOut={() => {router.push('/ann')}}

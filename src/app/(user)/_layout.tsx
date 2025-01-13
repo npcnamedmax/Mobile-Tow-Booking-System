@@ -1,12 +1,42 @@
-import { Stack } from "expo-router";
+import React from 'react';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Tabs, Redirect, useRouter } from 'expo-router';
+import { useAuth } from '@/providers/AuthProvider';
+
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+
+// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof FontAwesome>['name'];
+  color: string;
+}) {
+  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />;
+}
+
+export default function TabLayout() {
+  const colorScheme = useColorScheme();
+  const {session} = useAuth();
+
+  if(!session) {
+    useRouter().dismissAll();
+    return null;
+  }
 
 
-export default function UserStack() {
-    return (
-        <Stack>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="book" />
-            
-        </Stack>
-    );
+
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        // Disable the static render of the header on web
+        // to prevent a hydration error in React Navigation v6.
+        headerShown: useClientOnlyValue(false, true),
+      }}>
+        <Tabs.Screen name="index" options={{href: null}}/>
+
+      
+    </Tabs>
+  );
 }

@@ -1,104 +1,75 @@
-//add a button here to start nav, use Linking,openURL(google.navigation:q=37.484847,-122.148386)
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, StyleSheet, Image, Pressable, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, ActivityIndicator, ScrollView, Linking } from 'react-native';
 import { requests } from '@assets/data/requests';
-import ImageView from "react-native-image-viewing";
-import { useState } from 'react';
 import Button from '@/components/general/Button';
-import RequestField from '@/components/req/RequestField';
-import { getDistance } from 'geolib';
-
+import { useReqContext } from '@/providers/ReqProvider';
+import RequestDetail from '@/components/req/RequestDetail';
 
 export default function TowReqDetail() {    
     const id = useLocalSearchParams().id;
     const req = requests.find((req) => req.id === id);
-    if(!req) {
+    const {activeReq, setActiveReq} = useReqContext();
+    if (!req) {
         return (
-            <View>
+            <View style={styles.centered}>
                 <Text>Request not found</Text>
             </View>
         );
-    };
-    const [visible, setIsVisible] = useState<boolean>(false);
-    const [selectedImgIdx, setSelectedImgIdx] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
+    }
 
-    const images = Object.entries(req.img).map(([key, value]) => ({ uri: value }));
-    let tmpIdx = selectedImgIdx; //for image index change, (will be assigned to selectedImgIdx on image view close, if not it will keep rerendering if call setSelectedImgIdx directly in onImageIndexChange)
     
-    const distFromDriver = () => 
-        Math.round(getDistance( //calc dist bet chosen loc and user loc (straight line distance)
-        {latitude: req.userLoc.coord.lat, longitude: req.userLoc.coord.lng}, 
-        {latitude: userLoc.coord.lat, longitude: userLoc.coord.lng}) / 100) / 10
-    
+
+    const handleStartNav = () => {
+        const url = `google.navigation:q=${req.destLoc.coord.lat},${req.destLoc.coord.lng}`;
+        Linking.openURL(url).catch(err => console.error('Error opening navigation:', err));
+    };
+
+    const handleAccept = () => {
+        //handle request, if it is accepted, set activereq to true
+        //send timestamp to server
+        console.log('Request accepted');
+        setActiveReq(req); 
+    }
 
     return (
-        <ScrollView style={styles.container}>
-            <ImageView
-                images={images}
-                imageIndex={selectedImgIdx}
-                visible={visible}
-                onRequestClose={() => {
-                    setIsVisible(false)
-                    setSelectedImgIdx(tmpIdx)
-                }}
-                swipeToCloseEnabled={false}
-                onImageIndexChange={(idx) => tmpIdx = idx}
-            />
-            <Pressable
-                onPress={() => setIsVisible(true)}
-                style={styles.imageContainer}
-            >
-                {loading && (
-                    <View style={styles.loader}>
-                        <ActivityIndicator size="large" color="black" />
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
+            <View style={styles.container}>
+                <RequestDetail req={req} />
+                    <View style={styles.buttons}>
+                        <Button onPress={handleStartNav}>Start Navigation</Button>
+                        <Button onPress={handleAccept} disabled={activeReq!=null}>Accept</Button>
                     </View>
-                )}
-                <Image
-                    source={{ uri: images[selectedImgIdx].uri }}
-                    style={styles.image}
-                    onLoadStart={() => setLoading(true)}
-                    onLoadEnd={() => setLoading(false)}
-                    resizeMode='contain'
-                />
-            </Pressable>
-            <View style={styles.lowerInnerCon}>
-                <RequestField label={'DateTime'} value={req.datetime.format('YYYY-MM-DD HH:mm')} /> 
-                <RequestField label={'User Location'} value={req.userLoc.name} /> 
-                <Button>Accept</Button>
-            </View>
+                </View>
+            
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    container: {
+    scrollContent: {
+        flexGrow: 1,
+        padding: 10,
+    },
+    centered: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: 'black',
-        margin: 10,
     },
-    imageContainer: {
-        flex: 3,
-        width: '100%',
-        borderWidth: 2,
-        borderColor: 'blue',
+    container: {
+        flex: 1,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        padding: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
     },
-    image: {
-        width: '100%',
-        height: '100%',
+    buttons: {
+        marginTop: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    loader: {
-        position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        zIndex: 1,
-    },
-    lowerInnerCon: {
-        flex: 7,
-    }
 });
+

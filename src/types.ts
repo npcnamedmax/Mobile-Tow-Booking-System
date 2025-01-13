@@ -29,7 +29,7 @@ export type imagesType = {
   rear: imgType,
 };
 
-export const imgTypeConstants = ['left', 'right', 'front', 'rear'];
+export const imgTypeConstants : (keyof imagesType)[] = ['left', 'right', 'front', 'rear'];
 
 export type User = {
     id: string;
@@ -41,6 +41,7 @@ export type User = {
 }
 
 export type Car = {
+    carVin: string;
     carMake: string;
     carModel: string;
     carPlate: string;
@@ -48,7 +49,7 @@ export type Car = {
     carColor: string;
 }
 
-export type TowReq = {
+export type TowReq = { //from user 
     id: string;
     datetime: Dayjs;
     img: imagesType;
@@ -56,4 +57,10 @@ export type TowReq = {
     destLoc: locationType;
     userCar: Car;
     status: 'pending' | 'accepted' | 'rejected';
+}
+
+export type TowAcceptRequest = { //from tow truck driver
+    id: string;
+    datetime: Dayjs;
+    reqId: string;
 }

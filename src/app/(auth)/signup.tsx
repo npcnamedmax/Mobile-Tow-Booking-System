@@ -1,92 +1,178 @@
-import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-  import Button from '@/components/general/Button';
-  import {useState} from 'react';
+import { ScrollView, View, Text, StyleSheet, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
+import Button from '@/components/general/Button';
+import React from 'react';
+import SwitchSelector from "react-native-switch-selector";
+import { Link } from 'expo-router';
+import { useState } from 'react';
 
-  export default function SignUp() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+export default function SignUp() {
+  // General fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-    async function signUp() {
-      console.log("signup");
-    }
-  
-    const validateInput = () => {
-      setError('');
-      if (!username) {
-        setError('Please enter a username');
-        return false;
-      }
-      if (!password) {
-        setError('Please enter a password');
-        return false;
-      }
-      return true;
-    };
-  
-    const onSignUp = () => {
-      if (!validateInput()) return;
-      signUp();
-      console.log('Sign up!');
-    };
-  
-    return ( //view that avoids keyboard
-    <KeyboardAvoidingView style={{flex: 1}}>
+  // User-specific fields
+  const [policyNums, setPolicyNums] = useState(['']); // For multiple policy numbers
+
+  // Driver-specific fields
+  const [towTruckPlateNumber, setTowTruckPlateNumber] = useState('');
+  const [towCompanyName, setTowCompanyName] = useState('');
+
+  const [forUser, setForUser] = useState(true); // Render correct fields
+
+  const addPolicyField = () => {
+    setPolicyNums([...policyNums, '']);
+  };
+
+  return (
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}> 
-            <Text style={styles.title}>New Username</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="username"
-              value={username}
-              onChangeText={setUsername}
+        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+          <View style={styles.container}>
+            <SwitchSelector
+              options={[
+                { label: "User", value: "user" },
+                { label: "Driver", value: "driver" },
+              ]}
+              initial={0}
+              onPress={(value) => setForUser(value === "user")}
+              buttonColor="#4CAF50"
+              style={styles.switchSelector}
             />
-
-            <Text style={styles.title}>New Password</Text>
+            <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              secureTextEntry
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your password"
               value={password}
               onChangeText={setPassword}
+              secureTextEntry
             />
-            <Text style={styles.error}>{error}</Text>
-            <Button text="Sign Up" onPress={onSignUp} />
-        </View>
+            <Text style={styles.label}>Full Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your full name"
+              value={fullName}
+              onChangeText={setFullName}
+            />
+            <Text style={styles.label}>IC Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your IC number"
+              value={fullName}
+              onChangeText={setFullName}
+            />
+            <Text style={styles.label}>Phone Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your phone number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+            {forUser && (
+              <>
+                <Text style={styles.label}>Policy Numbers</Text>
+                {policyNums.map((policyNum, index) => (
+                  <TextInput
+                    key={index}
+                    style={styles.input}
+                    placeholder={`Policy Number ${index + 1}`}
+                    value={policyNum}
+                    editable={false} // Static for demonstration
+                  />
+                ))}
+                <Pressable style={styles.addButton} onPress={addPolicyField}>
+                  <Text style={styles.addButtonText}>+ Add Policy Number</Text>
+                </Pressable>
+              </>
+            )}
+            {!forUser && (
+              <>
+                <Text style={styles.label}>Tow Truck Plate Number</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your tow truck plate number"
+                  value={towTruckPlateNumber}
+                  onChangeText={setTowTruckPlateNumber}
+                />
+                <Text style={styles.label}>Tow Company Name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your tow company name"
+                  value={towCompanyName}
+                  onChangeText={setTowCompanyName}
+                />
+              </>
+            )}
+            <Button>
+              <Text>Sign Up</Text>
+            </Button>
+            <Link href="./signin" style={styles.signInLink}>
+              Already have an account? Sign In
+            </Link>
+          </View>
+        </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 20,
-    },
-    title: {
-      fontSize: 24,
-      marginBottom: 20,
-    },
-    input: {
-      height: 50,
-      width: '100%',
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 5,
-      padding: 10,
-      marginBottom: 10,
-    },
-    error: {
-      color: 'red',
-      marginBottom: 10,
-    },
-    link: {
-      color: 'blue',
-      textAlign: 'center',
-      marginTop: 10,
-    },
-  });
-  
-  
+  );
+}
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  switchSelector: {
+    marginBottom: 20,
+    width: '100%',
+  },
+  label: {
+    alignSelf: 'flex-start',
+    marginBottom: 5,
+    fontSize: 14,
+    color: '#555',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  addButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  signInLink: {
+    marginTop: 20,
+    color: '#007BFF',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+});

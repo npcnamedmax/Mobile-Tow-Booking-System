@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import ReqProvider from "@/providers/ReqProvider";
 
 
 export default function UserStack() {
@@ -7,5 +8,6 @@ export default function UserStack() {
             <Stack.Screen name="[id]" options={ {headerShown: false,} }/>
             <Stack.Screen name="index" options={ {headerShown: false,} }/>
         </Stack>
+        
     );
 }

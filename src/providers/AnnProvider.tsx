@@ -56,4 +56,6 @@ export default function AnnProvider({ children } : PropsWithChildren) {
   );
 }
 
-export const useAnnContext = () => useContext(AnnContext);
+export const useAnnContext = () => useContext(AnnContext); //cannot straightaway use return value since 
+//useContext is a hook, and hooks can only be used in functional components because react rely on 
+//component lifecycle to manage its state

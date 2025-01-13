@@ -1,14 +1,16 @@
 import Button from "@/components/general/Button";
-import { router } from "expo-router";
+import { Link } from "expo-router";
 import { View } from "react-native";
 
 export default function Index() {
-    const showReqList = () => {
-       router.push("./requests");
-    };
     return (
         <View>
-            <Button onPress={showReqList}>Press me</Button>
+            <Link href={'./requests'} asChild>
+                <Button>Requests</Button>
+            </Link>
+            <Link href={'./activeReq'} asChild>
+                <Button>Accepted Request</Button>
+            </Link>
         </View>
     );
 }

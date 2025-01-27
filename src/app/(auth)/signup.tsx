@@ -1,15 +1,18 @@
-import { ScrollView, View, Text, StyleSheet, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Pressable, Alert } from 'react-native';
 import Button from '@/components/general/Button';
 import React from 'react';
 import SwitchSelector from "react-native-switch-selector";
 import { Link } from 'expo-router';
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { IconButton } from 'react-native-paper';
 
 export default function SignUp() {
   // General fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [icNum, setIcNum] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
   // User-specific fields
@@ -25,6 +28,50 @@ export default function SignUp() {
     setPolicyNums([...policyNums, '']);
   };
 
+  const removePolicyField = (idx: number) => {
+    if(policyNums.length > 1) {
+      setPolicyNums(policyNums.filter((_, i) => i !== idx));
+    }
+  }
+
+  const handleChgPolicyNum = (index: number, value: string) => {
+    if(index >= 0 && index < policyNums.length) 
+      setPolicyNums(policyNums.map((policyNum, i) => i === index ? value : policyNum)); //copy and replace value at idx
+  };
+
+  const createAlert = (title: string, message: string) => {
+    Alert.alert(
+      title,
+      message,
+    );
+  };
+
+  const validateFields = () => {
+    if(!email || !password || !fullName || !phoneNumber) {
+      createAlert('Error', 'Please enter an email');
+      return false;
+    }
+    if(forUser && policyNums.some(policyNum => !policyNum)) {
+      createAlert('Error', 'Please enter all policy numbers');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if(validateFields())
+      /*
+      supabase.auth.signUp({ //add metadata
+        email,
+        password,
+      });*/
+      for(let i = 0; i < policyNums.length; i++) {
+        console.log(policyNums[i]);
+      }
+    }
+
+  
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -36,7 +83,7 @@ export default function SignUp() {
                 { label: "Driver", value: "driver" },
               ]}
               initial={0}
-              onPress={(value) => setForUser(value === "user")}
+              onPress={(value: string) => setForUser(value === "user")}
               buttonColor="#4CAF50"
               style={styles.switchSelector}
             />
@@ -68,8 +115,8 @@ export default function SignUp() {
             <TextInput
               style={styles.input}
               placeholder="Enter your IC number"
-              value={fullName}
-              onChangeText={setFullName}
+              value={icNum}
+              onChangeText={setIcNum}
             />
             <Text style={styles.label}>Phone Number</Text>
             <TextInput
@@ -83,13 +130,16 @@ export default function SignUp() {
               <>
                 <Text style={styles.label}>Policy Numbers</Text>
                 {policyNums.map((policyNum, index) => (
-                  <TextInput
-                    key={index}
-                    style={styles.input}
-                    placeholder={`Policy Number ${index + 1}`}
-                    value={policyNum}
-                    editable={false} // Static for demonstration
-                  />
+                  <View key={index} style={styles.policyNumField}>
+                    <TextInput
+                      style={[styles.input, styles.policyTextInput]}
+                      placeholder={`Policy Number ${index + 1}`}
+                      value={policyNum}
+      
+                      onChangeText={(value: string) => handleChgPolicyNum(index, value)}
+                    />
+                    <IconButton icon='minus-box' size={20} onPress={() => removePolicyField(index)} />
+                  </View>
                 ))}
                 <Pressable style={styles.addButton} onPress={addPolicyField}>
                   <Text style={styles.addButtonText}>+ Add Policy Number</Text>
@@ -114,7 +164,7 @@ export default function SignUp() {
                 />
               </>
             )}
-            <Button>
+            <Button onPress={handleSubmit}>
               <Text>Sign Up</Text>
             </Button>
             <Link href="./signin" style={styles.signInLink}>
@@ -125,6 +175,7 @@ export default function SignUp() {
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -175,4 +226,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
+  policyNumField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  policyTextInput: {
+    width: '80%',
+  }
 });
+

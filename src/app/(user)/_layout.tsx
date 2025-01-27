@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs, Redirect, useRouter } from 'expo-router';
+import { Stack, Redirect, useRouter } from 'expo-router';
 import { useAuth } from '@/providers/AuthProvider';
 
 import Colors from '@/constants/Colors';
@@ -17,26 +17,15 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {session} = useAuth();
-
-  if(!session) {
-    useRouter().dismissAll();
-    return null;
-  }
 
 
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-        <Tabs.Screen name="index" options={{href: null}}/>
+    <Stack>
+      
+        <Stack.Screen name="index" />
 
       
-    </Tabs>
+    </Stack>
   );
 }

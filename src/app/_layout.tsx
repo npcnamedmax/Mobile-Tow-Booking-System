@@ -54,7 +54,7 @@ function RootLayoutNav() { //lists all stack at root
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(user)" options={{ headerShown: false }} />
             <Stack.Screen name="(driver)" options={{ headerShown: false }} />
-            <Stack.Screen name="ann"  options={{ presentation: 'modal', title: 'Announcements' }} />
+            <Stack.Screen name="(ann)"  options={{ presentation: 'modal', title: 'Announcements' }} />
           </Stack>
         </AnnProvider>
       </AuthProvider>

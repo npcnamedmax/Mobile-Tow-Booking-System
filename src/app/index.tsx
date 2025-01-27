@@ -11,18 +11,6 @@ const index = () => {
   if(loading) {
     return <ActivityIndicator />;
   }
-
-  if(!session) {
-    return <Redirect href={'/signin'} />;
-  }
-
-    
-  if(session.user.user_metadata.user_type == 'driver') {
-    return <Redirect href={'/(driver)'} />;
-  }
-  else if(session.user.user_metadata.user_type == 'user') {
-    return <Redirect href={'/(user)'} />;
-  }
     
 
   
@@ -58,17 +46,7 @@ const index = () => {
   }
   */
   return (
-    <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
-      <Link href={'/(user)'} asChild>
-        <Button>User</Button>
-      </Link>
-      <Link href={'/(admin)'} asChild>
-        <Button>Admin</Button>
-      </Link>
-      <Button onPress={signOut} >Sign out</Button>
-      <Button onPress={tmp}>tmp</Button>
-      <Text>something</Text>
-    </View>
+    <Redirect href='/signup'/>
   );
 };
 

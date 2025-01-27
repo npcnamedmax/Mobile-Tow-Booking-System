@@ -69,7 +69,13 @@ export default function SignIn() {
               Sign up now
             </Link>
           </View>
-        </View>
+          <View style={styles.signUpRow}>
+            <Text>Forgot password? </Text>
+            <Link href="./signup" style={styles.link}>
+              Click here
+            </Link>
+          </View>
+      </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
